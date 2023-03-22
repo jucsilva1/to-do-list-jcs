@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--<link rel="stylesheet" href="../public/style.css"> // conectando style.css da pasta public ao meu index.ejs-->
+    <link rel="stylesheet" href="/style.css"> <!--Após colocar a linha no index.js app.use(express.static(path.join(__dirname, "public")));-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <title>To Do List</title>
+</head>
+<body>
+
+    <% if (message != "") { %>
+
+    <section class="message message-<%= type %>">
+        <p><%= message %></p>
+        <span id="close-message"><i class="bi bi-x"></i></span> 
+    </section>
+    <% } %>
+
+    <header>
+        <% if (task == null) { %>
+            <%- include('./components/form', {titleForm: "TO DO LIST", action: "create", value: "", idBtn: "addButton", nameBtn: "Adicionar"}) %>
+        
+
+        <!--<h1>TO DO LIST</h1> ** Este form foi componetizado dentro da pasta View->components/form
+        <form action="/create" method="post">
+            <input type="text" name="task" id="task" placeholder="Insira uma tarefa">
+            <button id="addButton" type="submit">Adicionar</button>
+        </form>-->
+          <% } else { %>
+                <%- include('./components/form', {titleForm: "EDITAR TAREFA", action: `updateOne/${task._id}`, value: task.task, idBtn: "updateButton", nameBtn: "Atualizar"}) %>
+        
+    <!--<h1>EDITAR TAREFA</h1>
+        <form action="/updateOne/<%= task._id %>" method="post"> <!--<%= task._id %> trará o _id do ATLAS para a rota-->
+    <!--   <input type="text" name="task" id="task" value="<%= task.task %>"> <!--pegando o value do _id do ATLAS.-->            
+    <!--   <button id="addButton" type="submit">Atualizar</button>
+        </form> -->
+          <% } %>  
+    </header>
+
+    <section id="tasks">
+        <ul>
+            <% tasksList.forEach((task) => { %> <!--"<% %>" sintaxe ejs para aceitar javascript dentro do código HTML.--> 
+                <li class="check-<%= task.check %>">
+                    <div>
+                        <a href="/check/<%= task._id %>" class="check-<%= task.check %>"><p><%= task.task %>
+                        <span>Criado em : <%= task.date.toLocaleDateString('pt-BR') %></span></p>  <!--o sinal de igual usado para mostrar na lista Tela HTTP-->
+                    </div>
+                         
+                    <div class="">
+                        <a class="btnUpdate"href="/getById/<%= task._id %>/update"><i class="bi bi-pencil-square"></i></a>  <!--Mandando o _id para a rota-->
+                        <a class="btnDelete"href="/getById/<%= task._id %>/delete"><i class="bi bi-trash"></i></a>
+                    </div>
+               </li>
+            <% }) %>
+         </ul>
+    </section>
+    
+    <% if (taskDelete != null) { %>
+        <%- include('./components/modalDel', {task: taskDelete})%>
+    <% } %>
+    
+   
+
+      <script src="script.js"></script>
+</body>
+</html>
